@@ -14,7 +14,7 @@ if (isset($_GET['delete_id'])) {
     $slider_id = $_GET['delete_id'];
     
     // First get the image path to delete the file
-    $sql_get = "SELECT PIC_LOC FROM IET_SLIDER WHERE SLIDER_ID = :slider_id";
+    $sql_get = "SELECT PIC_LOC FROM SLIDER WHERE SLIDER_ID = :slider_id";
     $stmt_get = oci_parse($conn, $sql_get);
     oci_bind_by_name($stmt_get, ':slider_id', $slider_id);
     oci_execute($stmt_get);
@@ -29,7 +29,7 @@ if (isset($_GET['delete_id'])) {
         }
         
         // Delete from database
-        $sql_delete = "DELETE FROM IET_SLIDER WHERE SLIDER_ID = :slider_id";
+        $sql_delete = "DELETE FROM SLIDER WHERE SLIDER_ID = :slider_id";
         $stmt_delete = oci_parse($conn, $sql_delete);
         oci_bind_by_name($stmt_delete, ':slider_id', $slider_id);
         
@@ -74,7 +74,7 @@ if (isset($_POST['submit'])) {
             // Attempt to move the uploaded file to the target directory
             if (move_uploaded_file($_FILES['PIC_LOC']['tmp_name'][$i], $target_file)) {
                 // Save the relative path of the uploaded image into the database
-                $sql = "INSERT INTO IET_SLIDER (SLIDER_YNAME, STATUS, PIC_LOC)
+                $sql = "INSERT INTO SLIDER (SLIDER_YNAME, STATUS, PIC_LOC)
                         VALUES (:slider_name, 'A', :pic_loc)";
                 $stmt = oci_parse($conn, $sql);
                 oci_bind_by_name($stmt, ':slider_name', $SLIDER_YNAME);
@@ -261,7 +261,7 @@ if (isset($_POST['submit'])) {
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $sql_select = "SELECT SLIDER_ID, SLIDER_YNAME, PIC_LOC FROM IET_SLIDER ORDER BY SLIDER_ID DESC";
+                                        $sql_select = "SELECT SLIDER_ID, SLIDER_YNAME, PIC_LOC FROM SLIDER ORDER BY SLIDER_ID DESC";
                                         $parse_select = oci_parse($conn, $sql_select);
                                         oci_execute($parse_select);
 

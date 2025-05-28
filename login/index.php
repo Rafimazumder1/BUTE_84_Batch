@@ -18,7 +18,7 @@
                 $_SESSION['user']=$user_row['USER_NAME'];
                 //$id = $_SESSION['id'];
         
-                header('Location:dashboard.php');
+                header('Location:report_list.php');
             }
          }
         
@@ -37,8 +37,8 @@
       <!-- CSS only -->
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-      <title>SWAADU Admin Login</title>
-    <link rel="icon" href="img/" type="image/ico">
+      <title>Admin Login</title>
+    <link rel="icon" href="img/logo.jpeg" type="image/ico">
 
       <style>
          /* body {
@@ -86,11 +86,11 @@
          }
          .login-html {
          width: 100%;
-         height: 100%;
+         height: 120%;
          position: absolute;
          padding: 0 70px 50px 70px;
          /* background: #0051a2e8; */
-         background-color: #028ab5;
+         background-color: #3f85f9;
          }
          .image-holder {
          text-align: center;
@@ -244,13 +244,17 @@
          color: #001F3F;
          background-color: #fff;
          }
+         .input::placeholder {
+        color: white;
+        opacity: 1; 
+    }
       </style>
    </head>
    <body style="background-color:#fff">
         <div class="login-wrap" >
             <div class="login-html">
                 <div class="image-holder" style="margin-top: 30px;">
-                    <img src="img/social_welfare.jpg" alt="logo" width="80px" height="80px">
+                    <img src="img/logo.jpeg" alt="logo" width="80px" height="80px">
                 </div>
                 <div class="login-form">
                     
@@ -274,11 +278,11 @@
                             <input type="submit" class="button" value="Sign In" name="submit">
                         </div>
                         <div style="color:#ff0000"></div>
+
                     
-                        <!-- <p style="text-align: center; color: white">OR</p>
-                        <div class="group">
-                            <a class="button" href="application.php" style="text-align: center">New Applicant</a>
-                        </div> -->
+                      <div class="group" style="text-align:center;">
+                        <a href="https://ietian.org" class="button" style="text-align:center; display:inline-block; background:#f44336; color:white; text-decoration:none; margin-top:10px;">Home</a>
+                    </div>
                     </form>
                     
                 </div>

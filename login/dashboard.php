@@ -1,5 +1,6 @@
 <?php include 'head.php'?>
 
+
 <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: #69bbf0;">
 
             <!-- Sidebar - Brand -->
@@ -21,10 +22,12 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="report_list.php">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
+
+
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -53,9 +56,12 @@
                         <!-- <a class="collapse-item" href="committe.php">Committe</a> -->
                         <!-- <a class="collapse-item" href="all_member.php">All Member</a> -->
                         <!-- <a class="collapse-item" href="pending_member.php">Pending Member</a> -->
+                        <a class="collapse-item" href="report_list.php">Member Details</a>
+                        <a class="collapse-item" href="slider_upload.php">Slider</a>
                         <a class="collapse-item" href="notice.php">Notice</a>
                         <!-- <a class="collapse-item" href="Proceed_add.php">Proceedings</a> -->
                         <a class="collapse-item" href="gallery_add.php">Gallery</a>
+                        <a class="collapse-item" href="scroll.php">Scroll</a>
                     </div>
                 </div>
             </li>
@@ -170,6 +176,9 @@
             
 
         </ul>
+
+
+        
 
 
 

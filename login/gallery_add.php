@@ -19,7 +19,7 @@ if (isset($_POST['submit'])) {
         if (in_array($fileExtension, $allowed_extensions)) {
             move_uploaded_file($_FILES['PIC_LOC']['tmp_name'][$i], $target_file);
 
-            $sql = "INSERT INTO IET_GALLERY (GALLARYNAME, STATUS, PIC_LOC) 
+            $sql = "INSERT INTO GALLERY (GALLARYNAME, STATUS, PIC_LOC) 
                     VALUES (:GALLARYNAME, :STATUS, :PIC_LOC)";
 
             $stmt = oci_parse($conn, $sql);
@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
 
 if (isset($_GET['delete_id'])) {
     $delete_id = $_GET['delete_id'];
-    $sql_select = "SELECT PIC_LOC FROM IET_GALLERY WHERE GALLARY_ID = :id";
+    $sql_select = "SELECT PIC_LOC FROM GALLERY WHERE GALLARY_ID = :id";
     $parse_select = ociparse($conn, $sql_select);
     oci_bind_by_name($parse_select, ':id', $delete_id);
     oci_execute($parse_select);
@@ -48,7 +48,7 @@ if (isset($_GET['delete_id'])) {
     $image_path_to_delete = $row_delete['PIC_LOC'];
     oci_free_statement($parse_select);
 
-    $sql_delete = "DELETE FROM IET_GALLERY WHERE GALLARY_ID = :id";
+    $sql_delete = "DELETE FROM GALLERY WHERE GALLARY_ID = :id";
     $parse_delete = ociparse($conn, $sql_delete);
     oci_bind_by_name($parse_delete, ':id', $delete_id);
     $success_delete = oci_execute($parse_delete);
@@ -64,7 +64,7 @@ if (isset($_GET['delete_id'])) {
     }
 }
 
-$sql_gallery = "SELECT GALLARY_ID, GALLARYNAME, PIC_LOC FROM IET_GALLERY ORDER BY GALLARYNAME";
+$sql_gallery = "SELECT GALLARY_ID, GALLARYNAME, PIC_LOC FROM GALLERY ORDER BY GALLARYNAME";
 $parse_gallery = ociparse($conn, $sql_gallery);
 oci_execute($parse_gallery);
 $gallery_data = [];
@@ -139,9 +139,9 @@ oci_free_statement($parse_gallery);
                                             class="text-danger">*</span>:</label>
                                     <select name="PLUG" id="PLUG" class="form-select" required>
                                         <option value="">--Select--</option>
-                                        <option value="S">School</option>
-                                        <option value="N">Student</option>
-                                        <option value="T">Teacher</option>
+                                        <option value="S">Group Photo</option>
+                                        <option value="N">Event Photo</option>
+                                        <option value="T">Our School</option>
                                     </select>
                                 </div>
                             </div>

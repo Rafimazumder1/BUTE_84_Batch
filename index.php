@@ -1,3 +1,110 @@
+<?PHP
+//set_time_limit(300);
+include 'connection.php';
+error_reporting(0);
+// Establish a connection to the Oracle database (ensure $conn is set up correctly)
+
+$slider = [];
+$sql_slider = "SELECT * FROM SLIDER";
+$parse = ociparse($conn, $sql_slider);
+
+if (!$parse) {
+    $e = oci_error($conn);
+    echo "Parse Error: " . $e['message'];
+    exit;
+}
+
+if (!oci_execute($parse)) {
+    $e = oci_error($parse);
+    echo "Execution Error: " . $e['message'];
+    exit;
+}
+
+// Fetch the data
+while ($row = oci_fetch_assoc($parse)) {
+    $slider[] = $row;
+}
+
+
+
+$main = [];
+$sql1_notice = "SELECT *FROM SCROLL ";
+$parse = ociparse($conn, $sql1_notice);
+oci_execute($parse);
+
+$marquee_text = '';
+while ($row = oci_fetch_assoc($parse)) {
+    $marquee_text .= $row['SCROLL_DESC'] . ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '; // Add spacing between notices
+}
+// var_dump($marquee_text);
+
+$selectedStatus = isset($_GET['status']) ? $_GET['status'] : '';
+
+// Prepare SQL query with optional status filtering
+$sql = "SELECT GALLARYNAME, PIC_LOC, STATUS FROM GALLERY";
+if (!empty($selectedStatus)) {
+    $sql .= " WHERE STATUS = :status";
+}
+$sql .= " ORDER BY GALLARYNAME";
+
+$parse = oci_parse($conn, $sql);
+if (!empty($selectedStatus)) {
+    oci_bind_by_name($parse, ':status', $selectedStatus);
+}
+oci_execute($parse);
+
+// Organize data by gallery name
+$gallery = [];
+while ($row = oci_fetch_assoc($parse)) {
+    $galleryName = $row['GALLARYNAME'];
+    $gallery[$galleryName][] = $row['PIC_LOC'];
+}
+oci_free_statement($parse);
+
+?>
+
+<?php
+                    include 'connection.php';
+                    $main = [];
+                    $sql_notice = "SELECT * FROM NOTICE WHERE STATUS = 'A'";
+                    $parse = ociparse($conn, $sql_notice);
+                    oci_execute($parse);
+
+                    while ($row = oci_fetch_assoc($parse)) {
+                        $main[] = $row;
+                    }
+
+                    // var_dump()
+
+                    $main5 = [];
+                    $sql_process = "SELECT * FROM PROCEED WHERE STATUS = 'A'";
+                    $parse = ociparse($conn, $sql_process);
+                    oci_execute($parse);
+
+                    while ($row = oci_fetch_assoc($parse)) {
+                        $main5[] = $row;
+                    }
+
+
+                    $sql = "SELECT GALLARYNAME, PIC_LOC FROM GALLERY WHERE STATUS = 'A' ORDER BY GALLARY_ID DESC";
+
+                    // print_r($sql);
+
+                    $parseresult = ociparse($conn, $sql);
+
+                    oci_execute($parseresult);
+                    $gallery = array(); // Initialize the $gallery array
+
+                    while ($row = oci_fetch_assoc($parseresult)) {
+                        $gallery[$row['GALLARYNAME']][] = $row['PIC_LOC'];
+                    }
+
+                    ?>
+
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -119,52 +226,88 @@
 
     <!-- Main slider  -->
     <style>
-        .main-slider-content-area .main-slider .slider-img img {
-            height: 450px!important;
+    .main-slider-content-area .main-slider .slider-img img {
+        height: 450px !important;
+    }
+
+    .slider-img {
+        width: 100%;
+        height: 450px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .slider-img img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .centered-zoom {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        color: #ffffff;
+        font-size: 32px;
+        font-weight: bold;
+        text-align: center;
+        z-index: 2;
+        animation: zoomIn 2s ease-in-out infinite alternate;
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    @keyframes zoomIn {
+        0% {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+    }
+</style>
+<section class="main-slider-area">
+    <div id="main-slider" class="main-slider-content-area owl-carousel owl-theme">
+        <?php
+        // Connect to Oracle and fetch slider data
+        $slider_names = [];
+
+        $sql_slider = "SELECT SLIDER_YNAME, PIC_LOC FROM SLIDER WHERE STATUS = 'A'";
+        $parse = ociparse($conn, $sql_slider);
+        oci_execute($parse);
+
+        while ($row = oci_fetch_assoc($parse)) {
+            $pic_loc = basename($row['PIC_LOC']);
+            $filename = pathinfo($pic_loc, PATHINFO_FILENAME);
+            $slider_names[$filename] = $row['SLIDER_YNAME'];
         }
 
-        .slider-img {
-            width: 100%;
-            height: 450px;
-            overflow: hidden;
+        // Load actual images from directory
+        $target_dir = "uploads/albums/thumbnails/";
+        $images = glob($target_dir . "*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+
+        if (!$images) {
+            echo "<!-- No images found in directory: $target_dir -->";
         }
 
-        .slider-img img {
-            width: 100%;
-            height: 100%; /* Set the height to 100% to match the container's height */
-            /* Remove object-fit: cover; to display the full image */
-        }
-    </style>
-    <section class="main-slider-area">
-        <div id="main-slider" class="main-slider-content-area  owl-carousel owl-theme">
+        foreach ($images as $image) {
+            $filename = pathinfo($image, PATHINFO_FILENAME);
+            $slider_yname = isset($slider_names[$filename]) ? $slider_names[$filename] : 'No Title Found';
+
+            echo '
             <div class="main-slider item">
-                <a href="">
+                <a href="#">
                     <div class="slider-img">
-                        <img src="uploads/albums/thumbnails/egm_2023.jpg" alt="">
+                        <img src="' . htmlspecialchars($image) . '" alt="' . htmlspecialchars($slider_yname) . '">
+                        <div class="centered-zoom">' . htmlspecialchars($slider_yname) . '</div>
                     </div>
                     <div class="box-shadow"></div>
                 </a>
-            </div>
-            <div class="main-slider item">
-                <a href="">
-                    <div class="slider-img">
-                        <img src="uploads/albums/thumbnails/get_2022_3.jpg" alt="">
-                    </div>
-                    <div class="box-shadow"></div>
-                </a>
-            </div>
-
-            <div class="main-slider item">
-                <a href="">
-                    <div class="slider-img">
-                        <img src="uploads/albums/thumbnails/ec_met.jpg" alt="">
-                    </div>
-                    <div class="box-shadow"></div>
-                </a>
-            </div>
-           
-        </div>
-    </section>
+            </div>';
+        }
+        ?>
+    </div>
+</section>
 
     <div class="about-us-area section-padding-top section-padding-bottom">
         <div class="container">
@@ -200,33 +343,38 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-xl-7 vov fade-in-right slow">
-                    <div class="card animated-card notice-board-card shadow-lg border-0 p-2 br-10 h-100">
+                    <div class="card animated-card notice-board-card shadow-lg border-0 p-2 br-10 h-100"
+                        style="background-color: #8ce2eb">
                         <div class="card-body mb-2">
                             <div class="heading mb-2">
-                                <h5>Notice Board</h5>
+                                <h5><span style="color: black ">Notice Board</span></h5>
                             </div>
                             <div class="description">
                                 <ul>
+                                    <?php
+
+                                    for ($i = 0; $i < count($main); $i++) {
+
+                                    ?>
                                     <li class="d-block mb-1">
-                                        <a class="p-1" target="_blank" href="">
-                                        <i class="fas fa-caret-right me-2"></i>
-                                        Upcoming Notice...................
-                                    </a>
+                                        <a class="p-1" target="_blank"
+                                            href="login/<?php echo $main[$i]['NOTICE_IMG'] ?>"
+                                            style="font-weight: bolder;font-size: 13px;">
+                                            <i class="fas fa-caret-right me-2"></i>
+                                            <?php echo $main[$i]['NOTICE_DESC'] ?>
+                                        </a>
                                     </li>
-                                    <!-- <li class="d-block mb-1">
-                                        <a class="p-1" target="_blank" href="">
-                                        <i class="fas fa-caret-right me-2"></i>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi, fugit!
-                                    </a>
-                                    </li> -->
-                                    
-                                    
+                                    <?php }
+                                    ?>
+
+
                                 </ul>
                             </div>
                             <div class="text-start">
-                                <a class="read-more-sm btn" href="">See All
-                                Notice →</a>
+                                <a class="read-more-sm btn" href=""><span style="color: black ">See All
+                                        Notice</span></a>
                             </div>
                         </div>
                     </div>
@@ -381,57 +529,41 @@
                 <div class="shortable-gallery mb-5">
                     
                     <!-- /.short-able-menu -->
-                    <div class="short-able-item row mb-5">
-                        <div class="mix photo_gallery col-lg-4 p-3 ">
-                            <a href="photo.php">
-                                <div class="short-able-content-area br-10 shadow-lg">
-                                    <div class="short-able-img zoom-in position-relative">
-                                        <img class="image-fit" src="uploads/albums/thumbnails/egm_2023.jpg" alt="">
-                                    </div>
-                                    <div class="short-able-content">
-                                        <div class="short-able-content-item" style="background-color: #ac1f25;color: white;">
-                                            <h5 style="color: white;">EGM October 14,2023 </h5>
-                                        </div>
-                                    </div>
-                                    <!-- /.short-able-content -->
-                                </div>
-                            </a>
-                        </div>
-                        <div class="mix photo_gallery col-lg-4 p-3 ">
-                            <a href="photo.php">
-                                <div class="short-able-content-area br-10 shadow-lg">
-                                    <div class="short-able-img zoom-in position-relative">
-                                        <img class="image-fit" src="uploads/albums/thumbnails/ec_met.jpg" alt="">
-                                    </div>
-                                    <div class="short-able-content">
-                                        <div class="short-able-content-item" style="background-color: #ac1f25;">
-                                        <h5 style="color: white;">Ec Meeting November 11,2023</h5>
-                                        </div>
-                                    </div>
-                                    <!-- /.short-able-content -->
-                                </div>
-                            </a>
-                        </div>
-                        <div class="mix photo_gallery col-lg-4 p-3 ">
-                            <a href="photo.php">
-                                <div class="short-able-content-area br-10 shadow-lg">
-                                    <div class="short-able-img zoom-in position-relative">
-                                        <img class="image-fit" src="uploads/albums/thumbnails/get_2022.jpg" alt="">
-                                    </div>
-                                    <div class="short-able-content">
-                                        <div class="short-able-content-item" style="background-color: #ac1f25;">
-                                        <h5 style="color: white;">Annual Get Together Dec 25,2022</h5>
-                                        </div>
-                                    </div>
-                                    <!-- /.short-able-content -->
-                                </div>
-                            </a>
-                        </div>
-
-                        
-                      
-
+                    <div class="row text-center mb-5">
+        <div class="col-md-4">
+            <a href="main_gallery.php?status=S">
+                <div class="card shadow">
+                    <img src="login/upload/gallery/group_photo.jpeg" class="card-img-top"
+                        style="height: 200px; object-fit: cover;" alt="School">
+                    <div class="card-body bg-primary text-white">
+                        <h5 class="card-title m-0">Group Photo</h5>
                     </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="main_gallery.php?status=N">
+                <div class="card shadow">
+                    <img src="login/upload/gallery/event_photo.jpeg" class="card-img-top"
+                        style="height: 200px; object-fit: cover;" alt="School">
+                    <div class="card-body bg-success text-white">
+                        <h5 class="card-title m-0">Event Photo</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="main_gallery.php?status=T">
+                <div class="card shadow">
+                    <img src="login/upload/gallery/school_photo.jpeg" class="card-img-top"
+                        style="height: 200px; object-fit: cover;" alt="School">
+                    <div class="card-body bg-info text-white">
+                        <h5 class="card-title m-0">Our School</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
                     <!-- /.short-able-item -->
                     <div class="short-able-button">
                         <ul>

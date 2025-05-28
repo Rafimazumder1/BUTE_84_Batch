@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
     }
 
     // Insert into DB
-    $sql = "INSERT INTO NOTICE(NOTICE_DESC, NOTICE_IMG, NOTICE_CREATE, STATUS)
+    $sql = "INSERT INTO NOTICE (NOTICE_DESC, NOTICE_IMG, NOTICE_CREATE, STATUS)
             VALUES (:NOTICE_DESC, :NOTICE_IMG, :NOTICE_CREATE, 'A')";
 
     $parseresult = ociparse($conn, $sql);
@@ -105,7 +105,7 @@ oci_free_statement($stid);
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>BANDHAN-84</title>
+    <title>IET</title>
     <link rel="icon" href="../uploads/logo.jpeg" type="image/ico">
 
     <!-- Custom fonts for this template -->
@@ -198,7 +198,7 @@ oci_free_statement($stid);
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3" style="background-color: #69bbf0;">
-                            <h4 class=" text-center m-4" style="color: white; font-weight: bold;">Bandhonn - 84</h4>
+                            <h4 class=" text-center m-4" style="color: white; font-weight: bold;">I.E.T Govt High School, Narayangonj</h4>
                             <h4 class=" text-center m-4" style="color: white; font-weight: bold;">Notice Create </h4>
                         </div>
                         <div class="card-body">
@@ -237,7 +237,7 @@ oci_free_statement($stid);
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>SL</th>
+                                                <!-- <th>SL</th> -->
                                                 <th>Notice Description</th>
                                                 <!-- <th>File</th> -->
                                                 <th>PDF View</th>
@@ -247,7 +247,7 @@ oci_free_statement($stid);
                                         <tbody>
                                             <?php foreach ($notices as $index => $notice): ?>
                                             <tr>
-                                                <td><?= $index + 1 ?></td>
+                                                <!-- <td><?= $index + 1 ?></td> -->
                                                 <td><?= htmlspecialchars($notice['NOTICE_DESC']) ?></td>
                                                 <!-- <td>
                                                     <?php if (!empty($notice['NOTICE_IMG'])): ?>

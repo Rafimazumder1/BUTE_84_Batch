@@ -114,7 +114,7 @@
                     <div class="align-items-center breadcrumb-banner-right d-flex h-100 justify-content-center justify-content-md-end text-capitalize">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item text-start"><a href="index.php">Home</a></li>
+                                <!-- <li class="breadcrumb-item text-start"><a href="index.php">Home</a></li> -->
                                 <li class="breadcrumb-item active breadcrumb-last text-start" style="font-weight: bold;color:#ac1f25;">
                                     about-us</li>
                             </ol>
