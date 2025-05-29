@@ -11,7 +11,7 @@
                 </div>
                 <div class="sidebar-brand-text mt-2">
                     <p style="font-weight: bold;font-size: 14px;color: white;">
-                    I.E.T Govt High School, Narayangonj
+                    Bandhan-84 BUTE,Dhaka
                     </p>
                     
                 </div>
